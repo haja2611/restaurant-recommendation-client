@@ -17,7 +17,7 @@ function CardItem() {
   const getAllRestaurants = async () => {
     try {
       const response = await axios.post(
-        "http://localhost:4000/api/restaurants",
+        "http://localhost:4000/api/restaurants/filter",
         {
           location: location,
           rating: rating,
@@ -49,7 +49,7 @@ function CardItem() {
           >
             <Card.Img
               variant="top"
-              src={item.image}
+              src={`http://localhost:4000${item.image}`}
               style={{ height: "20vh", backgroundCover: "cover" }}
             />
             <Card.Body>

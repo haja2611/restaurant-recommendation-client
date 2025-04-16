@@ -5,6 +5,7 @@ import { Form } from "react-bootstrap";
 import NavBar from "./components/NavBar/NavBar";
 import CardItem from "./components/RestaurantCard/Card";
 import useRestaurantContext from "./components/Hooks/useRestaurant";
+import AddRestaurant from "./components/RestaurantCard/AddRestaurant";
 
 function App() {
   const { selectedItems, setSelectedItems, setLocation, setRating } =
@@ -37,7 +38,6 @@ function App() {
   };
 
   return (
- 
     <div className="App">
       <NavBar />
       <div>
@@ -90,8 +90,9 @@ function App() {
       <div className={style.restaurants}>
         <h3>Restaurants</h3>
         <CardItem />
+        <AddRestaurant />
       </div>
-    </div> 
+    </div>
   );
 }
 
