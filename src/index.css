@@ -1,0 +1,66 @@
+/* Google Translate Widget Styling */
+#google_translate_element {
+  display: inline-block;
+  vertical-align: middle;
+  z-index: 9999;
+}
+
+/* Completely hide Google's branding and banner */
+.goog-te-banner-frame.skiptranslate,
+.goog-te-gadget-simple {
+  display: none !important;
+}
+
+/* Fix page layout shift */
+body {
+  top: auto !important;
+}
+
+/* Hide all default text and elements */
+.goog-te-gadget {
+  color: transparent !important;
+  font-size: 0 !important;
+}
+
+/* Style the select element */
+.goog-te-combo {
+  padding: 6px 24px 6px 8px !important;
+  border: 1px solid #ced4da !important;
+  border-radius: 4px !important;
+  background-color: white !important;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 8px center !important;
+  background-size: 16px 12px !important;
+  color: #212529 !important;
+  font-size: 14px !important;
+  appearance: none !important;
+  cursor: pointer;
+  min-width: 120px;
+}
+
+/* Hide the default Google text */
+.goog-te-menu-value {
+  display: none !important;
+}
+
+/* Hide the Google logo */
+.goog-logo-link {
+  display: none !important;
+}
+
+/* Style the dropdown menu */
+.goog-te-menu2 {
+  background: white !important;
+  border: 1px solid #ddd !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+  max-width: 200px !important;
+}
+
+.goog-te-menu2-item {
+  padding: 8px 12px !important;
+}
+
+.goog-te-menu2-item:hover {
+  background-color: #f8f9fa !important;
+}
