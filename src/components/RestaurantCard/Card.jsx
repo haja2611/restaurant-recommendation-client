@@ -1,5 +1,3 @@
-// EnhancedCard.js
-
 import Card from "react-bootstrap/Card";
 import ListGroup from "react-bootstrap/ListGroup";
 import Button from "react-bootstrap/Button";
@@ -18,18 +16,30 @@ function CardItem() {
   const [favorites, setFavorites] = useState([]);
   const [isEditMode, setIsEditMode] = useState(false);
   const [editForm, setEditForm] = useState({ name: "", address: "" });
+  const [currentUser, setCurrentUser] = useState(null); // user info with id, name
+
   console.log(selectedRestaurant);
   useEffect(() => {
     getAllRestaurants();
     fetchFavorites();
   }, [location, rating, selectedItems]);
-
+  useEffect(() => {
+    axios
+      .get("http://localhost:4000/api/user/get-user", {
+        withCredentials: true, // sends the cookie
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+      .then((res) => setCurrentUser(res?.data))
+      .catch((err) => console.error(err));
+  }, []);
   const fetchFavorites = async () => {
     try {
       const response = await axios.get(
         "http://localhost:4000/api/auth/getFavorites",
         {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+          withCredentials: true,
         }
       );
       if (response.data?.success) {
@@ -69,7 +79,7 @@ function CardItem() {
           restaurantId,
         },
         {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+          withCredentials: true,
         }
       );
       if (favorites.includes(restaurantId)) {
@@ -83,29 +93,57 @@ function CardItem() {
     }
   };
 
-  const openModal = (restaurant) => {
+  const openModal = (restaurant, edit = false) => {
     setSelectedRestaurant(restaurant);
     setShowModal(true);
-    setIsEditMode(true);
+    setIsEditMode(edit);
+    
+    if (edit) {
+      setEditForm({ name: restaurant.name, address: restaurant.address });
+    } else {
+      // Check if current user has already reviewed this restaurant
+      const existingReview = restaurant.reviews?.find(
+        (rev) => rev.user?._id === currentUser?._id
+      );
+      
+      if (existingReview) {
+        // Pre-fill the form with existing review
+        setNewReview({
+          rating: existingReview.rating,
+          comment: existingReview.comment
+        });
+      } else {
+        // Reset the form if no existing review
+        setNewReview({ rating: "", comment: "" });
+      }
+    }
   };
 
   const handleReviewSubmit = async () => {
+    if (!newReview.rating || !newReview.comment) {
+      alert("Please provide both rating and comment");
+      return;
+    }
+  
     try {
-      await axios.put(
+      await axios.post(
         "http://localhost:4000/api/restaurants/addReview",
         {
           restaurantId: selectedRestaurant._id,
           ...newReview,
         },
         {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+          withCredentials: true,
         }
       );
-      alert("Review added!");
+      
+      alert("Review submitted successfully!");
       setNewReview({ rating: "", comment: "" });
       setShowModal(false);
+      getAllRestaurants();
     } catch (error) {
       console.log("Review error", error);
+      alert("Failed to submit review: " + error.message);
     }
   };
   const handleDelete = async (restaurantId) => {
@@ -117,7 +155,7 @@ function CardItem() {
       await axios.delete(
         `http://localhost:4000/api/restaurant/delete/${restaurantId}`,
         {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+          withCredentials: true,
         }
       );
       alert("Restaurant deleted!");
@@ -133,7 +171,7 @@ function CardItem() {
         `http://localhost:4000/api/restaurant/edit/${selectedRestaurant._id}`,
         editForm,
         {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+          withCredentials: true,
         }
       );
       alert("Restaurant updated!");
@@ -156,7 +194,7 @@ function CardItem() {
           >
             <Card.Img
               variant="top"
-              src={`http://localhost:4000${item.image}`}
+              src={`http://localhost:4000${item?.image}`}
               style={{ height: "20vh", objectFit: "cover" }}
             />
             <Card.Body>
@@ -164,9 +202,10 @@ function CardItem() {
               <Card.Text>
                 Types of food we offer : {item.cuisines?.join(", ")}
               </Card.Text>
-              <Button variant="primary" onClick={() => openModal(item)}>
-                More Details
-              </Button>{" "}
+              <Button variant="primary" onClick={() => openModal(item, false)}>
+                More
+              </Button>
+
               {/* Bookmark Icon Button */}
               <Button
                 variant="link"
@@ -192,9 +231,22 @@ function CardItem() {
             <ListGroup className="list-group-flush">
               <ListGroup.Item>Address: {item.address}</ListGroup.Item>
               <ListGroup.Item>City: {item.location}</ListGroup.Item>
-              <ListGroup.Item>Rating: {item.rating}</ListGroup.Item>
+              <ListGroup.Item>Rating: {item.averageRating}</ListGroup.Item>
               <ListGroup.Item>
-                Offers: {item.offer ? "Yes" : "No"}
+                Rating:{" "}
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <span
+                    key={star}
+                    style={{
+                      color:
+                        star <= Math.round(item.averageRating)
+                          ? "#FFD700"
+                          : "#ccc",
+                    }}
+                  >
+                    ★
+                  </span>
+                ))}
               </ListGroup.Item>
             </ListGroup>
           </Card>
@@ -285,16 +337,76 @@ function CardItem() {
                     <strong>Rating:</strong> {selectedRestaurant.averageRating}
                   </p>
                   <hr />
+
+                  <h5>All Reviews</h5>
+                  <div style={{ maxHeight: "250px", overflowY: "auto" }}>
+                    {[...(selectedRestaurant.reviews || [])]
+                      .sort((a) => (a.user?._id === currentUser?._id ? -1 : 1))
+                      .map((rev) => (
+                        <div
+                          key={rev._id}
+                          style={{
+                            marginBottom: "1rem",
+                            padding: "0.5rem",
+                            borderBottom: "1px solid #ccc",
+                          }}
+                        >
+                          <div
+                            style={{ display: "flex", alignItems: "center" }}
+                          >
+                            <img
+                              src={
+                                rev.user?.avatar
+                                  ? `http://localhost:4000${rev.user?.avatar}`
+                                  : "/user.png"
+                              }
+                              alt="DP"
+                              style={{
+                                width: 40,
+                                height: 40,
+                                borderRadius: "50%",
+                                marginRight: "10px",
+                              }}
+                            />
+                            <strong>{rev.user?.name || "Anonymous"}</strong>
+                          </div>
+                          <div>
+                            {[1, 2, 3, 4, 5].map((star) => (
+                              <span
+                                key={star}
+                                style={{
+                                  color:
+                                    star <= rev.rating ? "#FFD700" : "#ccc",
+                                  fontSize: "1.2rem",
+                                }}
+                              >
+                                ★
+                              </span>
+                            ))}
+                          </div>
+                          <p>{rev.comment}</p>
+                        </div>
+                      ))}
+                  </div>
+
                   <h5>Add Review</h5>
-                  <input
-                    type="number"
-                    placeholder="Rating (1-5)"
-                    value={newReview.rating}
-                    onChange={(e) =>
-                      setNewReview({ ...newReview, rating: e.target.value })
-                    }
-                    className="form-control mb-2"
-                  />
+                  <div className="mb-2">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <span
+                        key={star}
+                        onClick={() =>
+                          setNewReview({ ...newReview, rating: star })
+                        }
+                        style={{
+                          cursor: "pointer",
+                          color: star <= newReview.rating ? "#FFD700" : "#ccc",
+                          fontSize: "1.5rem",
+                        }}
+                      >
+                        ★
+                      </span>
+                    ))}
+                  </div>
                   <textarea
                     placeholder="Comment"
                     value={newReview.comment}

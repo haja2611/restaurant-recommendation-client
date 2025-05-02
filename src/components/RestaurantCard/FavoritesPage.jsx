@@ -22,7 +22,7 @@ function FavoritesPage() {
       const response = await axios.get(
         "http://localhost:4000/api/auth/getFavorites",
         {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+          withCredentials: true
         }
       );
 
@@ -47,7 +47,7 @@ function FavoritesPage() {
           restaurantId,
         },
         {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+          withCredentials: true
         }
       );
       setFavorites(favorites.filter((item) => item._id !== restaurantId));
@@ -65,7 +65,7 @@ function FavoritesPage() {
           ...newReview,
         },
         {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+          withCredentials: true
         }
       );
       alert("Review added!");

@@ -16,6 +16,7 @@ function CardItem() {
         "http://localhost:4000/api/ai/recommend",
         {
           query: aiQuery,
+          
         }
       );
 

@@ -19,11 +19,11 @@ createRoot(document.getElementById("root")).render(
         <NavBar />
         <Routes>
           <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/" element={<App />} />
+          <Route path="/" element={<Login />} />
+          <Route path="/Home" element={<App />} />
           <Route path="/favorites" element={<FavoritesPage />} />
-          <Route path="/map" element={<MapPage />} />
-          <Route path="/Ai" element={<CardItem />} />
+          <Route path="/map-view" element={<MapPage />} />
+          <Route path="/AI-recommendation" element={<CardItem />} />
         </Routes>
       </Router>
     </Provider>

@@ -13,7 +13,14 @@ L.Icon.Default.mergeOptions({
   iconUrl: markerIcon,
   shadowUrl: markerShadow,
 });
-
+// Create a custom icon for user location
+const userLocationIcon = new L.Icon({
+  iconUrl:
+    "https://cdn0.iconfinder.com/data/icons/small-n-flat/24/678111-map-marker-512.png", // Different icon
+  iconSize: [32, 32],
+  iconAnchor: [16, 32],
+  popupAnchor: [0, -32],
+});
 function MapPage() {
   const [restaurants, setRestaurants] = useState([]);
   const [userLocation, setUserLocation] = useState(null); // Default center
@@ -65,7 +72,7 @@ function MapPage() {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution="&copy; OpenStreetMap contributors"
         />
-        <Marker position={userLocation}>
+        <Marker position={userLocation} icon={userLocationIcon}>
           <Popup>Your Location</Popup>
         </Marker>
 

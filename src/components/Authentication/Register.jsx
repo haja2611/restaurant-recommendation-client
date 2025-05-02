@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { setToken } from "../utils/auth";
+// import { setToken } from "../utils/auth";
 import { useNavigate } from "react-router-dom";
 function Register() {
   const [form, setForm] = useState({ name: "", email: "", password: "" });
@@ -11,11 +11,8 @@ function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post(
-        "http://localhost:4000/api/auth/register",
-        form
-      );
-      setToken(res.data.token);
+      await axios.post("http://localhost:4000/api/auth/register", form);
+      // setToken(res.data.token);
       navigate("/login");
       alert("Registration successful!");
     } catch (err) {

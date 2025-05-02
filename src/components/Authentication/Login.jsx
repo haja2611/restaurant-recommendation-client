@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { setToken } from "../utils/auth";
+// import { setToken } from "../utils/auth";
 import { useNavigate } from "react-router-dom";
 
 function Login() {
@@ -13,13 +13,13 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post(
-        "http://localhost:4000/api/auth/login",
-        form
-      );
-      setToken(res.data.token);
+      await axios.post("http://localhost:4000/api/auth/login", form, {
+        withCredentials: true,
+      });
+      // setToken(res.data.token);
+
       alert("Login successful!");
-      navigate("/");
+      navigate("/Home");
     } catch (err) {
       alert(err.response.data.msg || "Error");
     }
