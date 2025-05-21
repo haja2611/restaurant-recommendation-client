@@ -1,6 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
-import { Navbar, Nav, Container, Image, Modal, Button } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 // other imports...
 
 function CardItem() {
@@ -16,7 +16,6 @@ function CardItem() {
         "http://localhost:4000/api/ai/recommend",
         {
           query: aiQuery,
-          
         }
       );
 
@@ -55,7 +54,7 @@ function CardItem() {
         <div
           style={{ marginBottom: "20px", fontSize: "18px", fontWeight: "bold" }}
         >
-          AI Suggests: {aiRecommendation}
+          {aiRecommendation}
         </div>
       )}
 

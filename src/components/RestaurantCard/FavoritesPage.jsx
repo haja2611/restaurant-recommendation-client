@@ -22,7 +22,7 @@ function FavoritesPage() {
       const response = await axios.get(
         "http://localhost:4000/api/auth/getFavorites",
         {
-          withCredentials: true
+          withCredentials: true,
         }
       );
 
@@ -47,11 +47,11 @@ function FavoritesPage() {
           restaurantId,
         },
         {
-          withCredentials: true
+          withCredentials: true,
         }
       );
       setFavorites(favorites.filter((item) => item._id !== restaurantId));
-      alert("Favorite status toggled!");
+      alert("Added to Favorite!");
     } catch (error) {
       console.log("Favorite error", error);
     }
@@ -65,7 +65,7 @@ function FavoritesPage() {
           ...newReview,
         },
         {
-          withCredentials: true
+          withCredentials: true,
         }
       );
       alert("Review added!");

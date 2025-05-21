@@ -9,6 +9,14 @@ const Provider = ({ children }) => {
   const [location, setLocation] = useState();
   const [rating, setRating] = useState();
 
+  // ✅ Add these new state variables
+  const [ambience, setAmbience] = useState([]);
+  const [dietary, setDietary] = useState([]);
+  const [diningType, setDiningType] = useState([]);
+  const [weather, setWeather] = useState([]);
+  const [transport, setTransport] = useState([]);
+  const [timing, setTiming] = useState([]);
+
   const data = {
     selectedItems,
     setSelectedItems,
@@ -16,6 +24,20 @@ const Provider = ({ children }) => {
     setLocation,
     rating,
     setRating,
+
+    // ✅ Include these in the context value
+    ambience,
+    setAmbience,
+    dietary,
+    setDietary,
+    diningType,
+    setDiningType,
+    weather,
+    setWeather,
+    transport,
+    setTransport,
+    timing,
+    setTiming,
   };
 
   return (

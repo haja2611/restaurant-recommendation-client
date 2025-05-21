@@ -8,7 +8,17 @@ import axios from "axios";
 import { Heart, HeartFill, PencilSquare, Trash } from "react-bootstrap-icons";
 
 function CardItem() {
-  const { location, rating, selectedItems } = useRestaurantContext();
+  const {
+    location,
+    rating,
+    selectedItems,
+    ambience,
+    dietary,
+    diningType,
+    weather,
+    transport,
+    timing,
+  } = useRestaurantContext();
   const [restaurants, setRestaurants] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedRestaurant, setSelectedRestaurant] = useState(null);
@@ -22,7 +32,17 @@ function CardItem() {
   useEffect(() => {
     getAllRestaurants();
     fetchFavorites();
-  }, [location, rating, selectedItems]);
+  }, [
+    location,
+    rating,
+    selectedItems,
+    ambience,
+    dietary,
+    diningType,
+    weather,
+    transport,
+    timing,
+  ]);
   useEffect(() => {
     axios
       .get("http://localhost:4000/api/user/get-user", {
@@ -58,6 +78,12 @@ function CardItem() {
           location: location,
           rating: rating,
           cuisines: selectedItems,
+          ambiences: ambience, // Add this
+          nutrients: dietary, // Add this
+          dining: diningType, // Add this
+          weatherPreference: weather, // Add this
+          transport: transport, // Add this
+          timing: timing, // Add this
         }
       );
 
@@ -97,7 +123,7 @@ function CardItem() {
     setSelectedRestaurant(restaurant);
     setShowModal(true);
     setIsEditMode(edit);
-    
+
     if (edit) {
       setEditForm({ name: restaurant.name, address: restaurant.address });
     } else {
@@ -105,12 +131,12 @@ function CardItem() {
       const existingReview = restaurant.reviews?.find(
         (rev) => rev.user?._id === currentUser?._id
       );
-      
+
       if (existingReview) {
         // Pre-fill the form with existing review
         setNewReview({
           rating: existingReview.rating,
-          comment: existingReview.comment
+          comment: existingReview.comment,
         });
       } else {
         // Reset the form if no existing review
@@ -124,7 +150,7 @@ function CardItem() {
       alert("Please provide both rating and comment");
       return;
     }
-  
+
     try {
       await axios.post(
         "http://localhost:4000/api/restaurants/addReview",
@@ -136,7 +162,7 @@ function CardItem() {
           withCredentials: true,
         }
       );
-      
+
       alert("Review submitted successfully!");
       setNewReview({ rating: "", comment: "" });
       setShowModal(false);

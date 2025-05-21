@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 import { Modal, Button, Form } from "react-bootstrap";
 
@@ -22,13 +22,17 @@ const locationOptions = [
   "Delhi",
   "Banglore",
   "Pune",
+  "Kerala",
 ];
 const nutrientOptions = [
   "Low Calorie",
+  "Halal",
+  "Vegetarian",
   "Nut Free",
   "Gluten Free",
   "Vegan",
   "High Protein",
+  "Keto",
 ];
 
 const timingOptions = ["Breakfast", "Lunch", "Dinner", "Snacks", "Brunch"];
@@ -36,7 +40,8 @@ const timingOptions = ["Breakfast", "Lunch", "Dinner", "Snacks", "Brunch"];
 const transportOptions = ["Bus", "Railway", "Metro", "Cab", "Bike Parking"];
 
 const weatherOptions = ["Cold", "Hot", "Rainy", "Summerlike", "Winterlike"];
-
+const diningTypes = ["Solo", "Couple", "Family", "Large Group"];
+const ambiences = ["Casual", "Fine Dining", "Cafe", "Pub", "Family-Friendly"];
 const AddRestaurant = ({ show, onHide }) => {
   const [formData, setFormData] = useState({
     name: "",
@@ -45,6 +50,7 @@ const AddRestaurant = ({ show, onHide }) => {
     location: "",
     offers: false,
     cuisines: [],
+    ambiences: [],
     latitude: "",
     longitude: "",
     nutrients: [],
@@ -68,6 +74,8 @@ const AddRestaurant = ({ show, onHide }) => {
         "timing",
         "transport",
         "weatherPreference",
+        "dining",
+        "ambiences",
       ].includes(name)
     ) {
       const updated = checked
@@ -101,8 +109,8 @@ const AddRestaurant = ({ show, onHide }) => {
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
+    // e.preventDefault();
     const data = new FormData();
     Object.entries(formData).forEach(([key, value]) => {
       if (Array.isArray(value)) {
@@ -120,7 +128,6 @@ const AddRestaurant = ({ show, onHide }) => {
           withCredentials: true,
           headers: {
             "Content-Type": "multipart/form-data",
-           
           },
         }
       );
@@ -236,6 +243,7 @@ const AddRestaurant = ({ show, onHide }) => {
               ))}
             </div>
           </Form.Group>
+
           {/* Nutrients */}
           <Form.Group className="mb-3">
             <Form.Label>Nutrient Info</Form.Label>
@@ -269,7 +277,23 @@ const AddRestaurant = ({ show, onHide }) => {
               ))}
             </div>
           </Form.Group>
+          {/* ambiences */}
 
+          <Form.Group className="mb-3">
+            <Form.Label>Ambiences</Form.Label>
+            <div className="d-flex flex-wrap gap-2">
+              {ambiences.map((item, idx) => (
+                <Form.Check
+                  key={idx}
+                  type="checkbox"
+                  label={item}
+                  name="ambience"
+                  value={item}
+                  onChange={handleChange}
+                />
+              ))}
+            </div>
+          </Form.Group>
           {/* Transport */}
           <Form.Group className="mb-3">
             <Form.Label>Transport Facilities</Form.Label>
@@ -303,7 +327,22 @@ const AddRestaurant = ({ show, onHide }) => {
               ))}
             </div>
           </Form.Group>
-
+          <Form.Group className="mb-3">
+            <Form.Label>DiningTypes</Form.Label>
+            <div className="d-flex flex-wrap gap-2">
+              {diningTypes.map((dining, idx) => (
+                <Form.Check
+                  key={idx}
+                  type="checkbox"
+                  id={`dining-${idx}`}
+                  label={dining}
+                  name="dining"
+                  value={dining}
+                  onChange={handleChange}
+                />
+              ))}
+            </div>
+          </Form.Group>
           {/* Latitude Longitude */}
           <Form.Group className="mb-3">
             <Form.Label>Latitude</Form.Label>
